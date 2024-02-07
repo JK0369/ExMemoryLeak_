@@ -27,7 +27,7 @@ class VC2: UIViewController {
         // retain cycle
         self.main = MyDispatchQueue.main
         
-        MyDispatchQueue.main.async { [weak self] in
+        MyDispatchQueue.main.async {
             print("\(self)")
         }
     }

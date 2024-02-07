@@ -17,17 +17,30 @@ class ViewController: UIViewController {
 
 class VC2: UIViewController {
     var main: MyDispatchQueue?
+    var storedSomeFuncClass: SomeFuncClass?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
         
+        // retain cycle1
 //        createMemoryLeak()
         
-        // retain cycle
-        self.main = MyDispatchQueue.main
+        // retain cycle2
+//        self.main = MyDispatchQueue.main
+//        MyDispatchQueue.main.async {
+//            print("\(self)")
+//        }
         
-        MyDispatchQueue.main.async {
+        // retain cycle3
+        storedSomeFuncClass = SomeFuncClass()
+        storedSomeFuncClass?.someFunc {
+            print("\(self)")
+        }
+        
+        // retain cycle x
+        let c = SomeFuncClass()
+        c.someFunc {
             print("\(self)")
         }
     }
@@ -35,3 +48,10 @@ class VC2: UIViewController {
     deinit { print("DEINIT: VC2") }
 }
 
+class SomeFuncClass {
+    var closure: (() -> ())?
+    
+    func someFunc(_ closure: @escaping () -> ()) {
+        self.closure = closure
+    }
+}
